@@ -15,7 +15,6 @@ export async function friendlyFetch() {
                 .then(response => response.json())
                 .then(data => {
                     localStorage.setItem('films', JSON.stringify(data.results))
-                    console.log('fetched from localStorage')
                     return data.results
                 })
         }

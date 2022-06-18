@@ -20,22 +20,22 @@ const audioPlayer = new AudioPlayer(music)
 audioPlayer.start(music, bodyEl)
 audioPlayer.render
 
-async function getFilmList(isUsingSessioStorage) {
-    if (isUsingSessioStorage) {
-        const films = await friendlyFetch()
-        setFilmList(films)
-    }
-    else {
-        fetch(`${API_ENDPOINT}/films/`)
-            .then(response => response.json())
-            .then(data => {
-                setFilmList(data.results)
-            })
-    }
+function getFilmList() {
+    friendlyFetch().then(data => {
+        if (data) {
+            setFilmList(data)
+        } else {
+            fetch(`${API_ENDPOINT}/films/`)
+                .then(response => response.json())
+                .then(newData => {
+                    setFilmList(newData.results)
+                })
+        }
+    })
 }
 
 function setFilmList(data) {
-    const filmList = JSON.parse(data);
+    const filmList = typeof data === "string" ? JSON.parse(data) : data;
     filmList.sort((a, b) => {
         return a.episode_id - b.episode_id
     })
@@ -67,4 +67,4 @@ function setFilmContent(roman, title, content) {
     restartAnimation(preTextEl)
 }
 
-getFilmList(true)
+getFilmList()
